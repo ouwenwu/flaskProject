@@ -248,7 +248,7 @@ function getLocation(){
 let base64;
 function upLoadImg() {
     document.querySelector('#file').onchange = function (e) {
-        console.log("im=mage")
+        console.log("image")
         console.log(this.files.length)
         selected_file = e.target.files[0];
         console.log(selected_file)
