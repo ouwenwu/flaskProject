@@ -37,6 +37,7 @@ function begin_run(){
     }
 }
 
+var map = null
 function getLocation(){
     var image_binary_data;
     var pureCoverage = true;
@@ -83,7 +84,7 @@ function getLocation(){
             units: 'degrees',
             global: false
         });
-        var map = new ol.Map({
+        map = new ol.Map({
             target: 'map',
             layers: [
                 untiled,
@@ -94,44 +95,6 @@ function getLocation(){
             })
         });
     map.getView().fit(bounds, map.getSize());
-
-    function addPoint(coordinate, map){
-        var features = [new ol.Feature({geometry: new ol.geom.Point(coordinate)})]
-         var pointLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                features: features
-            }),
-            style: new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 5,
-                    stroke: new ol.style.Stroke({
-                        color:'#fff'
-                    }),
-                    fill: new ol.style.Fill({
-                        color:'#f00'
-                    })
-                })
-            })
-        })
-        map.addLayer(pointLayer)
-        var arr = map.getLayers().array_
-        console.log(arr)
-
-    }
-    function addLine(lineData, map){
-        //画线
-        var line_features = []
-        line_features[0] = new ol.Feature({
-            geometry: new ol.geom.LineString(lineData)
-        })
-        var lineLayer = new ol.layer.Vector({
-            source:new ol.source.Vector({
-                features:line_features
-            })
-        })
-        map.addLayer(lineLayer)
-        map.getView().fit(bounds, map.getSize());
-    }
 
     let video = document.getElementById("video");
     getMedia()
@@ -198,136 +161,76 @@ function getLocation(){
         //     }
         // })
     }
+}
 
-    var transToFile = async(blob, fileName, fileType) => {
-        return new window.File([blob], fileName, {type: fileType})
-    }
+function addPoint(coordinate, map){
+    var features = [new ol.Feature({geometry: new ol.geom.Point(coordinate)})]
+     var pointLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: features
+        }),
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                stroke: new ol.style.Stroke({
+                    color:'#fff'
+                }),
+                fill: new ol.style.Fill({
+                    color:'#f00'
+                })
+            })
+        })
+    })
+    map.addLayer(pointLayer)
+    var arr = map.getLayers().array_
+    console.log(arr)
 
+}
 
-    function _vise_extract_features() {
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = "blob";
-        xhr.addEventListener('load', function (e) {
-            if (xhr.status === 200){
-                selected_file_features = this.response;
-                console.log(selected_file_features)
-                _vise_search_features();
-            }
-        });
-        xhr.addEventListener('timeout', function (e) {
-            console.log('Timeout waiting for response from server');
-        });
-        xhr.addEventListener('error', function (e) {
-            console.log('Error waiting for response from server');
-        });
-        xhr.open('POST', 'https://ar-test.app.wshunli.cc:443/qunlou_floor3/_extract_image_features');
-        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.send(image_binary_data);
-
-    }
-    function _vise_search_features(){
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = "aplication/json";
-        xhr.addEventListener('load', function(e) {
-            if (xhr.status === 200){
-                _vise_external_search = JSON.parse(this.response);
-                console.log(_vise_external_search["RESULT"])
-            }
-          });
-          xhr.addEventListener('timeout', function(e) {
-            console.log('Timeout waiting for response from server');
-          });
-          xhr.addEventListener('error', function(e) {
-            console.log('Error waiting for response from server');
-          });
-          xhr.open('POST', 'https://ar-test.app.wshunli.cc:443/qunlou_floor3/_search_using_features');
-          xhr.send(selected_file_features);
-
-    }
+function addLine(lineData, map){
+    //画线
+    var line_features = []
+    line_features[0] = new ol.Feature({
+        geometry: new ol.geom.LineString(lineData)
+    })
+    var lineLayer = new ol.layer.Vector({
+        source:new ol.source.Vector({
+            features:line_features
+        })
+    })
+    map.addLayer(lineLayer)
+    map.getView().fit(bounds, map.getSize());
 }
 let base64;
 function upLoadImg() {
     document.querySelector('#file').onchange = function (e) {
-        console.log("image")
-        console.log(this.files.length)
         selected_file = e.target.files[0];
-        console.log(selected_file)
 
         var reader = new FileReader();
         reader.onload = function (e) { //当文件加载完成后调用
             //我们可以看到文件转为Base64后的格式
             console.log(e.target.result); //e.target.resul  就是我们需要的base64 ！！！
             base64 = e.target.result
-            _vise_extract_features()
+            $.ajax({
+                url: "https://api-test.app.wshunli.cc//upLoadImg",
+                type: "POST",
+                data: {"base64": base64},
+                timeout: 100000,
+                success: function (res) {
+                    coordinate = [res.data.x, res.data.y]
+                    addPoint(coordinate, map)
+                    // var lineData = [[10, 56], [11, 56], [11, 57]]
+                    // addLine(lineData, map)
+                    console.log(res)
+                    // requestAnimationFrame(takePhoto);
+                }
+            })
         }
         if (selected_file) {
             reader.readAsDataURL(selected_file);
         }
     }
 }
-
-function _vise_extract_features() {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = "blob";
-    xhr.addEventListener('load', function (e) {
-        if (xhr.status === 200){
-            selected_file_features = this.response;
-            console.log(selected_file_features)
-            _vise_search_features();
-        }
-    });
-    xhr.addEventListener('timeout', function (e) {
-        console.log('Timeout waiting for response from server');
-    });
-    xhr.addEventListener('error', function (e) {
-        console.log('Error waiting for response from server');
-    });
-    xhr.open('POST', 'https://ar-test.app.wshunli.cc:443/qunlou_floor3/_extract_image_features');
-    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-    xhr.send(selected_file);
-
-}
-function _vise_search_features(){
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = "aplication/json";
-    xhr.addEventListener('load', function(e) {
-        if (xhr.status === 200){
-            _vise_external_search = JSON.parse(this.response);
-            console.log(_vise_external_search["RESULT"])
-            var fileNameList = {}
-            for(var i=0;i<_vise_external_search["RESULT"].length;i++){
-                if(_vise_external_search["RESULT"][i]["score"]>100){
-                    fileNameList[i] = {}
-                    fileNameList[i]["name"] = _vise_external_search["RESULT"][i]["filename"]
-                }
-            }
-            $.ajax({
-                url: "https://api-test.app.wshunli.cc//upLoadImg",
-                type: "POST",
-                data: {"base64": base64,"image":JSON.stringify(fileNameList)},
-                timeout: 100000,
-                success: function (res) {
-                    coordinate = [res.data.x, res.data.y]
-                    addPoint(coordinate, map)
-                    var lineData = [[10, 56], [11, 56], [11, 57]]
-                    addLine(lineData, map)
-                    console.log(res)
-                    // requestAnimationFrame(takePhoto);
-                }
-            })
-        }
-      });
-      xhr.addEventListener('timeout', function(e) {
-        console.log('Timeout waiting for response from server');
-      });
-      xhr.addEventListener('error', function(e) {
-        console.log('Error waiting for response from server');
-      });
-      xhr.open('POST', 'https://ar-test.app.wshunli.cc:443/qunlou_floor3/_search_using_features');
-      xhr.send(selected_file_features);
-
-}
-
 
 
 
