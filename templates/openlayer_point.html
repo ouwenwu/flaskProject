@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/ol.css" type="text/css">
+    <style>
+        body {
+            font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+            font-size: small;
+        }
+        iframe {
+            width: 100%;
+            height: 250px;
+            border: none;
+        }
+        #map {
+            clear: both;
+            position: relative;
+            width: 500px;
+            height: 100vh;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="/static/js/ol.js" type="text/javascript"></script>
+    <title>OpenLayers map preview</title>
+  </head>
+  <body>
+    <div id="map"></div>
+
+  </body>
+<script>
+    // 模拟后台数据
+var trackData = [
+    {
+        "lon":120.124512,
+        "lat":35.978006
+    },
+    {
+        "lon":120.651855,
+        "lat":34.867905
+    },
+    {
+        "lon":121.398926,
+        "lat":33.779147
+    },
+    {
+        "lon":121.530762,
+        "lat":32.842674
+    }
+]
+// 遍历得到点的集合
+var features = []
+for(var i=0;i<trackData.length;i++){
+    // 将点转换成地图识别的格式
+    var coordinate = ol.proj.transform([trackData[i].lon,trackData[i].lat],'EPSG:4326','EPSG:3857')
+    features[i] = new ol.Feature({
+        geometry: new ol.geom.Point(coordinate)
+    })
+}
+var map = new ol.Map({
+    target: 'map',
+    view: new ol.View({
+        center: ol.proj.fromLonLat([116.359506, 35.302920]),
+        zoom: 6
+    }),
+    layers:[
+        // 底图
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        }),
+        // 点图层
+        new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: features
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    stroke: new ol.style.Stroke({
+                        color:'#fff'
+                    }),
+                    fill: new ol.style.Fill({
+                        color:'#f00'
+                    })
+                })
+            })
+        })
+    ]
+})
+</script>
+</html>

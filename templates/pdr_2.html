@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        div.panel{
+            width: 100%;
+            height: 800px;
+            border: 1px solid #ccc;
+            margin: 1%;
+        }
+        div.panel div.example {
+            width: 100%;
+            height: 800px;
+            position: relative;
+        }
+        div.explanation {
+            right: 0;
+            height: 100%;
+            padding: 20px 10px 0 10px;
+            overflow: scroll;
+        }
+        div.showStep{
+            font-size: 64px;
+            color: #fff;
+            width: 300px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <div id="original" class="example">
+            <canvas id="original_canvas"></canvas>
+        </div>
+        <div class="explanation"></div>
+    </div>
+    <div class="panel">
+        <div id="fft" class="example">
+            <canvas id="fft_canvas"></canvas>
+        </div>
+        <div class="explanation"></div>
+    </div>
+    <div class="panel">
+        <div id="fft_filtered" class="example">
+            <canvas id="fft_filtered_canvas"></canvas>
+        </div>
+        <div class="explanation"></div>
+    </div>
+    <div class="panel">
+        <div id="original_filtered" class="example">
+            <canvas id="original_filtered_canvas"></canvas>
+        </div>
+        <div class="explanation"></div>
+    </div>
+    <div class="showStep" id="showStep">0</div>
+
+    <!-- 遮罩层 -->
+    <div id="cover" style="background-color: #000;position: absolute;left: 0px;top:0px;width: 100%;filter: alpha(opacity=30);opacity: 0.3;display: none;z-index: 2"></div>
+    <!-- 弹窗 -->
+    <div id="showdiv"
+         style="width: 80%; margin: 0 auto; height: 9.5rem; border: 1px solid #999; display: none; position: absolute; top: 40%; left: 10%; z-index: 3; background: #fff">
+        <!-- 标题 -->
+        <div style="background: #F8F7F7; width: 100%; height: 2rem; font-size: 0.65rem; line-height: 2rem; border: 1px solid #999; text-align: center;">
+            提示
+        </div>
+        <!-- 内容 -->
+        <div style="text-indent: 50px; height: 4rem; font-size: 0.5rem; padding: 0.5rem; line-height: 1rem; ">
+            初始化中，请保持手机平稳
+        </div>
+        <!-- 按钮 -->
+        <div style="background: #418BCA; width: 80%; margin: 0 auto; height: 1.5rem; line-height: 1.5rem; text-align: center;color: #fff;margin-top: 1rem; -moz-border-radius: .128rem; -webkit-border-radius: .128rem; border-radius: .128rem;font-size: .59733rem;"
+             >
+            确 定
+        </div>
+    </div>
+</body>
+<script src="../static/js/jquery-2.2.4.js"></script>
+<script src="../static/my_js/StepCal.js"></script>
+<script src="../static/fft_js/complex_array.js"></script>
+<script src="../static/fft_js/fft.js"></script>
+<script type="module" src="../static/my_js/pdr_2.js"></script>
+</html>

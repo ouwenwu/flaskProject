@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="{{ url_for('static',filename='js/leaflet.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/xlsx.core.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/jquery-2.2.4.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.css') }}">
+    <style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+</head>
+<body>
+    <div id="map" style="width: 100%; height: 100%;"></div>
+
+</body>
+
+    <script>
+        {#var map = L.map('map').setView([0, 0], 100);#}
+
+        var wmsLayer = L.tileLayer.wms("http://10.100.12.8:8080/geoserver/oww/wms?",{
+            layers:'oww:qunlou_xd',
+            parameters: {
+                service : 'WMS',
+                format: 'image/jpeg',
+              }
+        })
+
+        var map = L.map('map', {
+            center:[0, 0],
+            zoom:170000,
+
+            src:L.CRS.EPSG3857,
+            layers: wmsLayer
+        });
+
+    </script>
+</html>

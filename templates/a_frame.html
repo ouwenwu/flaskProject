@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../static/js/aframe.js"></script>
+    <script src="{{ url_for('static',filename='js/jquery-2.2.4.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/my.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/OrbitControls.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/vConsole.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/camera.css') }}">
+    <title>Title</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* 隐藏body窗口区域滚动条 */
+        }
+    </style>
+
+    <script>
+        AFRAME.registerComponent('log', {
+            schema: {type: 'string'},
+            init: function () {
+                var stringToLog = this.data;
+                console.log(stringToLog);
+            }
+        });
+    </script>
+</head>
+<body>
+<!-- VR预览，请点击菜单“视图”-》“全屏模式” -->
+<a-scene>
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+</a-scene>
+
+</body>
+
+
+</html>

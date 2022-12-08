@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="{{ url_for('static',filename='js/leaflet.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/xlsx.core.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/jquery-2.2.4.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.css') }}">
+    <style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+</head>
+<body>
+    <input type="file" name="excel-file" id="excel-file" value="导入excel文件">
+    <div id="map" style="width: 100%; height: 100%;"></div>
+    <script>
+
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        $('#excel-file').change(function (e){
+            try {
+	            new Uint8Array([1,2]).slice(0,2);
+	        } catch (e) {
+	            console.log("[Uint8Array"+e.description+"]这里使用【Array.slice】。");
+	            //IE或有些浏览器不支持Uint8Array.slice()方法。改成使用Array.slice()方法
+	            Uint8Array.prototype.slice = Array.prototype.slice;
+	        }
+	        var url=$('#excel-file').val();
+	        if(!url){return;}
+	        var suffix=url.substring(url.lastIndexOf(".")+1,url.length);
+	        if(!(suffix=="xls"||suffix=="xlsx")){
+	            return alert("文件类型不正确");
+	        }
+	        var files = e.target.files;
+	        var fileReader = new FileReader();
+	        fileReader.readAsArrayBuffer(files[0]);// 以二进制方式打开文件
+	        fileReader.onload = function(ev) {
+	            $('#excel-file').val('');
+	            $("#context").html("");
+	            try {
+	            	var data = ev.target.result;
+	            	var workbook = XLSX.read(data, { type: 'array'}),
+	                persons = [];
+	            } catch (e) {
+	            	console.error(e);
+	                return alert('文件类型不正确!');
+	            }
+
+	            //遍历每张表读取
+	            for (var sheet in workbook.Sheets) {
+	                if (workbook.Sheets.hasOwnProperty(sheet)) {
+	                    persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet],{raw:true, header:1}));
+	                    for ( var i = 2; i <555; i++){
+                            console.log(persons[i][0])
+                            $.ajax({
+                                type: 'GET',
+                                async: false,
+                                url:'/if_newStep',
+                                dataType:'json',
+                                data:{'jsd_y':persons[i][5],'time':persons[i][0]},
+                                success:function (res){
+                                    console.log(res)
+                                },
+                                error:function (){
+                                    console.log('error')
+                                }
+
+                            })
+	                    }
+	                    //break;// 如果只取第一张表，就把beak注释取消
+	                }
+	            }
+				console.log(persons)
+	        };
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+.home-video {
+
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;/*这里是关键*/
+    position: fixed;
+    z-index: -1;
+}
+.canvas{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;/*这里是关键*/
+    position: fixed;
+    z-index: 1;
+}
+#file{
+    z-index: 2;
+}
+.container {
+    margin: 0 auto;
+    position: relative;
+}
+
+.home-video {
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;/*这里是关键*/
+    position: fixed;
+    z-index: -1;
+}
+.camera_div{
+    margin: 0 auto;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+#map {
+    clear: both;
+    width: 100%;
+    height: 50vh;
+    border: 1px solid black;
+    z-index: 1;
+}
+
+

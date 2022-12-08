@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{#    <canvas id="myChart" width="400" height="400"></canvas>#}
+{#    <div class="data"></div>#}
+    <div id="box-step" style="width: 100%;height: 100vh;background-color: pink;font-size: 50px">
+        111111
+        <button onclick="showWindow()">点击显示弹框</button>
+    </div>
+    <!-- 遮罩层 -->
+    <div id="cover" style="background-color: #000;position: absolute;left: 0px;top:0px;width: 100%;filter: alpha(opacity=30);opacity: 0.3;display: none;z-index: 2"></div>
+    <!-- 弹窗 -->
+    <div id="showdiv"
+         style="width: 80%; margin: 0 auto; height: 9.5rem; border: 1px solid #999; display: none; position: absolute; top: 40%; left: 10%; z-index: 3; background: #fff">
+        <!-- 标题 -->
+        <div style="background: #F8F7F7; width: 100%; height: 2rem; font-size: 0.65rem; line-height: 2rem; border: 1px solid #999; text-align: center;">
+            提示
+        </div>
+        <!-- 内容 -->
+        <div style="text-indent: 50px; height: 4rem; font-size: 0.5rem; padding: 0.5rem; line-height: 1rem; ">
+            初始化中，请保持手机平稳
+        </div>
+        <!-- 按钮 -->
+        <div style="background: #418BCA; width: 80%; margin: 0 auto; height: 1.5rem; line-height: 1.5rem; text-align: center;color: #fff;margin-top: 1rem; -moz-border-radius: .128rem; -webkit-border-radius: .128rem; border-radius: .128rem;font-size: .59733rem;"
+             >
+            确 定
+        </div>
+    </div>
+</body>
+
+<script src="../static/js/jquery-2.2.4.js"></script>
+<script src="../static/js/chart-2.9.0.js"></script>
+<script src="../static/js/fft.js"></script>
+<script src="../static/my_js/StepCal.js"></script>
+<script src="../static/my_js/pdr_2.js"></script>
+<script>
+    function showWindow(){
+        $('#showdiv').show();
+        $('#cover').css('display','block')
+        $('#cover').css('height',document.body.clientHeight + 'px')
+    }
+        // 关闭弹窗
+    function closeWindow() {
+        $('#showdiv').hide();  //隐藏弹窗
+        $('#cover').css('display', 'none');   //显示遮罩层
+    }
+</script>
+</html>
